@@ -15,14 +15,14 @@ ModuleInfo "Author:    Si Dunford"
 ModuleInfo "Version:   1.1"
 ModuleInfo "License:   MIT"
 
-ModuleInfo "History: V1.0, 15 OCT 2022"
-ModuleInfo "History: First Release"
-
 ModuleInfo "History: V1.1, 23 OCT 2022"
 ModuleInfo "History: Updated event type to INT from STRING"
 ModuleInfo "History: Added support for EmitEventHook and FlipHook"
 ModuleInfo "History: Added test-observer.bmx"
 ModuleInfo "History: First Public version available on Github"
+
+ModuleInfo "History: V1.0, 15 OCT 2022"
+ModuleInfo "History: First Release"
 
 Import BRL.Event		' TEvent, AllocUserEventId
 Import BRL.Map			' TIntMap
@@ -43,7 +43,8 @@ Type Observer
 	
 	Global _events:TIntMap = New TIntMap()
 	
-	Method New() ; End Method	' Singleton - Prevent creation
+	' Prevent instance creation by making New() private
+	Method New() ; End Method
 	
 	Function _EventHook:Object( id:Int, data:Object, context:Object )
 		Local ev:TEvent = TEvent(data)
