@@ -48,8 +48,7 @@ Type Observer
 	
 	Function _EventHook:Object( id:Int, data:Object, context:Object )
 		Local ev:TEvent = TEvent(data)
-		If Not ev; Return data
-		post( ev.id, data )
+		If ev; post( ev.id, data )
 		Return data
 	End Function
 
