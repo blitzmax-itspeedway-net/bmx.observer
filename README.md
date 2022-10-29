@@ -91,6 +91,8 @@ Observer.Events( True|False )
 Adding support for system events will allow you to subscribe to all the standard Blitzmax events which include the following:
 (Some of these are MaxGUI Specific).
 
+| | | | |
+|---|---|---|---|---|
 | EVENT_APPMASK | EVENT_APPSUSPEND | EVENT_APPRESUME | EVENT_APPTERMINATE |
 | EVENT_APPOPENFILE | EVENT_APPIDLE | EVENT_KEYMASK | EVENT_KEYDOWN |
 | EVENT_KEYUP | EVENT_KEYCHAR | EVENT_KEYREPEAT | EVENT_MOUSEMASK |
