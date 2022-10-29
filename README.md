@@ -2,7 +2,7 @@
 
 An event observer system easily added to any existing type.
 
-**VERSION:** 1.0
+**VERSION:** 1.1
 
 # DEPENDENCIES
 * [BlitzMax-NG](https://blitzmax.org/downloads/)
@@ -88,27 +88,74 @@ End Type
 ```
 Observer.Events( True|False )
 ```
-Adding support for system events will allow you to subscribe to all the standard Blitzmax events which include the following:
+Adding support for system events will allow you to subscribe to all the standard Blitzmax events.
+```
+Observer.Events( True )     ' Enable BlitzMax events
+
+Type MyType Implements IObserver
+
+    Method New()
+        Observer.on( EVENT_APPSUSPEND, self )
+        Observer.on( EVENT_APPRESUME, self )
+    End Method
+
+    Method Observe( event:Int, data:Object )
+        Select event
+        Case EVENT_APPSUSPEND
+            game.pause()
+        Case EVENT_APPRESUME
+            game.pause( False )
+        End Select
+    End Method
+
+End Type
+```
+
+Available BlitzMAX events include the following:
 (Some of these are MaxGUI Specific).
 
-| EVENT_APPMASK | EVENT_APPSUSPEND | EVENT_APPRESUME | EVENT_APPTERMINATE |
-| :- | :- | :- | :- |
-| __EVENT_APPOPENFILE__ | __EVENT_APPIDLE__ | __EVENT_KEYMASK__ | __EVENT_KEYDOWN__ |
-| __EVENT_KEYUP__ | __EVENT_KEYCHAR__ | __EVENT_KEYREPEAT__ | __EVENT_MOUSEMASK__ |
-| __EVENT_MOUSEDOWN__ | __EVENT_MOUSEUP__ | __EVENT_MOUSEMOVE__ | __EVENT_MOUSEWHEEL__ |
-| __EVENT_MOUSEENTER__ | __EVENT_MOUSELEAVE__ | __EVENT_TIMERMASK__ | __EVENT_TIMERTICK__ |
-| __EVENT_HOTKEYMASK__ | __EVENT_HOTKEYHIT__ | __EVENT_GADGETMASK__ | __EVENT_GADGETACTION__ |
-| __EVENT_GADGETPAINT__ | __EVENT_GADGETSELECT__ | __EVENT_GADGETMENU__ | __EVENT_GADGETOPEN__ |
-| __EVENT_GADGETCLOSE__ | __EVENT_GADGETDONE__ | __EVENT_GADGETLOSTFOCUS__ | __EVENT_GADGETSHAPE__ |
-| __EVENT_WINDOWMASK__ | __EVENT_WINDOWMOVE__ | __EVENT_WINDOWSIZE__ | __EVENT_WINDOWCLOSE__ |
-| __EVENT_WINDOWACTIVATE__ | __EVENT_WINDOWACCEPT__ | __EVENT_WINDOWMINIMIZE__ | __EVENT_WINDOWMAXIMIZE__ |
-| __EVENT_WINDOWRESTORE__ | __EVENT_MENUMASK__ | __EVENT_MENUACTION__ | __EVENT_STREAMMASK__ |
-| __EVENT_STREAMEOF__ | __EVENT_STREAMAVAIL__ | __EVENT_PROCESSMASK__ | __EVENT_PROCESSEXIT__ |
-| __EVENT_TOUCHMASK__ | __EVENT_TOUCHDOWN__ | __EVENT_TOUCHUP__ | __EVENT_TOUCHMOVE__ |
-| __EVENT_MULTIGESTURE__ | __EVENT_USEREVENTMASK__ | | |
+```
+EVENT_APPMASK          EVENT_APPSUSPEND     EVENT_APPRESUME
+EVENT_APPTERMINATE     EVENT_APPOPENFILE    EVENT_APPIDLE
+EVENT_KEYMASK          EVENT_KEYDOWN        EVENT_KEYUP
+EVENT_KEYCHAR          EVENT_KEYREPEAT      EVENT_MOUSEMASK
+EVENT_MOUSEDOWN        EVENT_MOUSEUP        EVENT_MOUSEMOVE
+EVENT_MOUSEWHEEL       EVENT_MOUSEENTER     EVENT_MOUSELEAVE
+EVENT_TIMERMASK        EVENT_TIMERTICK      EVENT_HOTKEYMASK
+EVENT_HOTKEYHIT        EVENT_GADGETMASK     EVENT_GADGETACTION
+EVENT_GADGETPAINT      EVENT_GADGETSELECT   EVENT_GADGETMENU
+EVENT_GADGETOPEN       EVENT_GADGETCLOSE    EVENT_GADGETDONE
+EVENT_GADGETLOSTFOCUS  EVENT_GADGETSHAPE    EVENT_WINDOWMASK
+EVENT_WINDOWMOVE       EVENT_WINDOWSIZE     EVENT_WINDOWCLOSE
+EVENT_WINDOWACTIVATE   EVENT_WINDOWACCEPT   EVENT_WINDOWMINIMIZE
+EVENT_WINDOWMAXIMIZE   EVENT_WINDOWRESTORE  EVENT_MENUMASK
+EVENT_MENUACTION       EVENT_STREAMMASK     EVENT_STREAMEOF
+EVENT_STREAMAVAIL      EVENT_PROCESSMASK    EVENT_PROCESSEXIT
+EVENT_TOUCHMASK        EVENT_TOUCHDOWN      EVENT_TOUCHUP
+EVENT_TOUCHMOVE        EVENT_MULTIGESTURE   EVENT_USEREVENTMASK
+```
 
 ## Flip Event Support
 ```
 Observer.Flip( True|False )
 ```
 Adding support for flip events will allow you to subscribe to the `EVENT_FLIP` event.
+
+```
+Observer.Flip( True )     ' Enable Flip events
+
+Type MyType Implements IObserver
+
+    Method New()
+        Observer.on( EVENT_FLIP, self )
+    End Method
+
+    Method Observe( event:Int, data:Object )
+        Select event
+        Case EVENT_FLIP
+            gui.render()
+        End Select
+    End Method
+
+End Type
+```
