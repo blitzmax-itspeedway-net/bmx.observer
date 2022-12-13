@@ -1,8 +1,11 @@
 SuperStrict
 
+'	OBSERVER EXAMPLES
+'	(c) Copyright Si Dunford, October 2022
+
 Import bmx.observer
 
-AppTitle="Observer Test"
+AppTitle="Observer Test 1"
 Graphics 300,200
 
 Type TWatcher Implements IObserver

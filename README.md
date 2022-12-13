@@ -2,7 +2,7 @@
 
 An event observer system easily added to any existing type.
 
-**VERSION:** 1.1
+**VERSION:** 1.3
 
 # DEPENDENCIES
 * [BlitzMax-NG](https://blitzmax.org/downloads/)
@@ -84,6 +84,19 @@ Type MyType Implements IObserver
 
 End Type
 ```
+To provide the ability to log or debug messages, the method debug() has been included that
+will post all messages.
+
+```
+Type MyType Implements IObserver
+
+    Method New()
+        Observer.debug( self )
+    End Method
+
+End Type
+```
+
 ## System Event Support
 ```
 Observer.Events( True|False )
@@ -135,6 +148,16 @@ EVENT_TOUCHMASK        EVENT_TOUCHDOWN      EVENT_TOUCHUP
 EVENT_TOUCHMOVE        EVENT_MULTIGESTURE   EVENT_USEREVENTMASK
 ```
 
+## MAXGUI
+Instead of using an event loop; you can use the Observer with MaxGUI by replacing the mainloop with a simple wait:
+```
+Repeat
+	WaitEvent()		' Process MaxGUI events
+	Delay(5)
+Forever
+```
+An full example is included in the examples folder 
+
 ## Flip Event Support
 ```
 Observer.Flip( True|False )
@@ -159,3 +182,4 @@ Type MyType Implements IObserver
 
 End Type
 ```
+
