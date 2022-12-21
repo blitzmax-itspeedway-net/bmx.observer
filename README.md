@@ -2,7 +2,7 @@
 
 An event observer system easily added to any existing type.
 
-**VERSION:** 1.3
+**VERSION:** 1.4
 
 # DEPENDENCIES
 * [BlitzMax-NG](https://blitzmax.org/downloads/)
@@ -147,6 +147,15 @@ EVENT_STREAMAVAIL      EVENT_PROCESSMASK    EVENT_PROCESSEXIT
 EVENT_TOUCHMASK        EVENT_TOUCHDOWN      EVENT_TOUCHUP
 EVENT_TOUCHMOVE        EVENT_MULTIGESTURE   EVENT_USEREVENTMASK
 ```
+
+## THREADING
+Locking/Unlocking mutexes in a non-threaded application was considered wasteful
+and therefore Observer is not threadsafe by default. It was decided to make 
+threads optional and a method was added in version 1.4 to enable or disable 
+threasafe mode.
+
+	Observer.threaded()			' Enable threadsafe mode
+	Observer.threaded( False )	' Disable threadsafe mode (DEFAULT)
 
 ## MAXGUI
 Instead of using an event loop; you can use the Observer with MaxGUI by replacing the mainloop with a simple wait:

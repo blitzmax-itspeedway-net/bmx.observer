@@ -2,7 +2,7 @@ SuperStrict
 
 '   OBSERVER FOR BLITZMAX-NG
 '   (c) Copyright Si Dunford, Oct 2022, All Rights Reserved
-'   V1.3
+'   V1.4
 
 Rem
 bbdoc: bmx.observer
@@ -12,8 +12,11 @@ Module bmx.observer
 
 ModuleInfo "Copyright: Si Dunford, Oct 2022, All Rights Reserved"
 ModuleInfo "Author:    Si Dunford"
-ModuleInfo "Version:   1.3"
+ModuleInfo "Version:   1.4"
 ModuleInfo "License:   MIT"
+
+ModuleInfo "History: V1.4, 21 DEC 2022"
+ModuleInfo "History: Single threaded by default, added threaded() method"
 
 ModuleInfo "History: V1.3, 08 DEC 2022"
 ModuleInfo "History: Threadsafe"
@@ -47,15 +50,16 @@ End Interface
 ' Observer Namespace
 Type Observer
 	Private
-	
 	Global _events:TIntMap = New TIntMap()
-	Global _mutex:TMutex = CreateMutex()
 	
-	Global DEBUGGER:Int = Allocate( "Event Debugger" )
+	Global DEBUGGER:Int = Allocate( "Event Debugger" )			'[1.2]
+	Global _mutex:TMutex = CreateMutex()						'[1.3]
+	Global _threadsafe:Int = False								'[1.4]
 	
 	' Prevent instance creation by making New() private
 	Method New() ; End Method
-	
+
+	'[1.1] Private eventhook handler
 	Function _EventHook:Object( id:Int, data:Object, context:Object )
 		Local ev:TEvent = TEvent(data)
 		'If ev; DebugLog( "POSTING EVENT "+ev.id )
@@ -63,6 +67,7 @@ Type Observer
 		Return data
 	End Function
 
+	'[1.1] Private fliphook handler
 	Function _FlipHook:Object( id:Int, data:Object, context:Object )
 		post( EVENT_FLIP, Null )
 		Return data
@@ -79,57 +84,55 @@ Type Observer
 	Function Name:String( event:Int )
 		Return TEvent.DescriptionForId( event )
 	End Function
-	
-	Function debug( handler:IObserver, enable:Int = True)
-		If enable
-			on( DEBUGGER, handler )
-		Else
-			off( DEBUGGER, handler )
-		End If
-	End Function
 		
 	' Add an event listener: Type must implement IObserver
 	Function on( event:Int, handler:IObserver )
-		LockMutex( Observer._mutex )
+		If _threadsafe; LockMutex( Observer._mutex )			'[1.3, 1.4]
 		Local list:TList = TList( _events[ event ] )
 		If Not list
 			list = New TList()
 			_events[event] = list
 		End If
 		list.addlast( handler )
-		UnlockMutex( Observer._mutex )
+		If _threadsafe; UnlockMutex( Observer._mutex )			'[1.3, 1.4]
 	End Function
 	
 	' Remove an event listener: Type must implement IObserver
 	Function off( event:Int, handler:IObserver )
 		If Not _events.contains( event ); Return
-		LockMutex( Observer._mutex )
+		If _threadsafe; LockMutex( Observer._mutex )			'[1.3, 1.4]
 		Local list:TList = TList( _events[ event ] )
 		For Local callback:IObserver = EachIn list
 			If callback = handler; list.remove( callback )
 		Next
 		If list.isempty(); _events.remove(event)
-		UnlockMutex( Observer._mutex )
+		If _threadsafe; UnlockMutex( Observer._mutex )			'[1.3, 1.4]
 	End Function
 	
 	' Publish an event to all subscribers
 	Function post( event:Int, data:Object )
+		' [1.2] added support for event debugging
 		If _events.contains( DEBUGGER ); _post( event, DEBUGGER, data )
 		If _events.contains( event ); _post( event, event, data )
 		
+		'[1.2] post moved to inner function so it can be used twice
 		Function _post( event:Int, handler:Int, data:Object )
 			Local list:TList = TList( _events[ handler ] )
 			If Not list; Return	' This should never happen
-			'LockMutex( Observer._mutex )
+			' NOTE, Making this threadsafe causes deadlocks if observer used inside handler!
 			For Local callback:IObserver = EachIn list 
-				callback.Observe( event, data )
+				' Prevent list changes from returning null
+				If callback
+					callback.Observe( event, data )
+				Else
+					Exit
+				End If
 			Next
-			'UnlockMutex( Observer._mutex )
 		End Function
 		
 	End Function
 
-	' Add/Remove system events to the observer system
+	'[1.1] Add/Remove system events to the observer system
 	Function Events( add:Int = True )
 		If add
 			AddHook( EmitEventHook, _EventHook )
@@ -138,14 +141,29 @@ Type Observer
 		EndIf
 	End Function
 
-	' Add/Remove flip events to the observer system
+	'[1.1] Add/Remove flip events to the observer system
 	Function Flip( add:Int = True )
 		If add
 			AddHook( FlipHook, _FlipHook )
 		Else
 			RemoveHook( FlipHook, _FlipHook )
 		EndIf
-	End Function	
+	End Function
+
+	'[1.2] provide interface for debugging
+	Function debug( handler:IObserver, enable:Int = True)
+		If enable
+			on( DEBUGGER, handler )
+		Else
+			off( DEBUGGER, handler )
+		End If
+	End Function
+	
+	' [1.4] Optional threaded support
+	Function threaded( state:Int = True )
+		_threadsafe = state
+	End Function
+	
 End Type
 
 
