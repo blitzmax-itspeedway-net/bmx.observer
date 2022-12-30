@@ -2,7 +2,7 @@ SuperStrict
 
 '   OBSERVER FOR BLITZMAX-NG
 '   (c) Copyright Si Dunford, Oct 2022, All Rights Reserved
-'   V1.4
+'   V1.5
 
 Rem
 bbdoc: bmx.observer
@@ -12,8 +12,11 @@ Module bmx.observer
 
 ModuleInfo "Copyright: Si Dunford, Oct 2022, All Rights Reserved"
 ModuleInfo "Author:    Si Dunford"
-ModuleInfo "Version:   1.4"
+ModuleInfo "Version:   1.5"
 ModuleInfo "License:   MIT"
+
+ModuleInfo "History: V1.5, 30 DEC 2022"
+ModuleInfo "History: Added .count()"
 
 ModuleInfo "History: V1.4, 21 DEC 2022"
 ModuleInfo "History: Single threaded by default, added threaded() method"
@@ -162,6 +165,13 @@ Type Observer
 	' [1.4] Optional threaded support
 	Function threaded( state:Int = True )
 		_threadsafe = state
+	End Function
+
+	' [1.5] Count number of handlers for given event
+	Function count:Int( event:Int )
+		If Not _events.contains( event ); Return 0
+		Local list:TList = TList( _events[ event ] )
+		Return list.count()
 	End Function
 	
 End Type

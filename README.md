@@ -2,7 +2,7 @@
 
 An event observer system easily added to any existing type.
 
-**VERSION:** 1.4
+**VERSION:** 1.5
 
 # DEPENDENCIES
 * [BlitzMax-NG](https://blitzmax.org/downloads/)
@@ -69,14 +69,10 @@ Local eventName:String = Observer.name( EVENT_EXPLOSION )
 Observer.post( EVENT_EXPLOSION, data )
 ```
 
-## Adding an event listener
-An event listener can be added to any existing type, simply by adding an `Implements IObserver` to the definition:
+## Listening for events
+An event listener can be added to any existing type, simply by adding an `Implements IObserver` to the definition and defining Method Observe().
 ```
 Type MyType Implements IObserver
-
-    Method New()
-        Observer.on( EVENT_EXPLOSION, self )
-    End Method
 
     Method Observe( event:Int, data:Object )
         Debuglog( "MyType:Observe(): "+Observer.name( event ) )
@@ -84,8 +80,37 @@ Type MyType Implements IObserver
 
 End Type
 ```
+
+## Adding and Removing event listeners
+The .on() method is used to add a listener. Events are then delivered to the Observe() method:
+The .off() method is used to remove a listener:
+```
+Type MyType Implements IObserver
+
+    Method Observe( event:Int, data:Object )
+        Debuglog( "MyType:Observe(): "+Observer.name( event ) )
+    End Method
+
+    Method Enable()
+        Observer.on( EVENT_EXPLOSION, self )
+    End Method
+
+    Method Disable()
+        Observer.off( EVENT_EXPLOSION, self )
+    End Method
+
+End Type
+```
+
+## Obtain number of listeners
+You can obtain the number of handlers configured for a specific event:
+```
+Local handlers:int = Observer.count( EVENT_EXPLOSION )
+```
+
+## Debugging messages
 To provide the ability to log or debug messages, the method debug() has been included that
-will post all messages.
+will post all messages to your Observe() method:
 
 ```
 Type MyType Implements IObserver
