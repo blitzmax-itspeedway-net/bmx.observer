@@ -1,0 +1,43 @@
+@define incrementVersion
+
+    -- Identify if a file exists by attempting to open it
+    function fileExists( filename )
+       local file = io.open( filename, "r" )
+       if file ~= nil then io.close( file ) return true else return false end
+    end
+
+    -- Initialise variables
+    local version = 1
+    local build = 0
+    local lines = {}
+
+    -- Check if version file exists
+    if fileExists( "version.txt" ) then
+
+        -- Load existing Version File
+        for line in io.lines("version.txt") do
+            lines[ #lines + 1 ] = line
+        end
+
+        -- Increment Build number
+        if #lines > 1 then 
+            version = lines[1] 
+            build = lines[2]
+            build = build + 1
+        end
+    end
+
+    print("OBSERVER Version "..version..", build "..build )
+
+    -- Write updated file
+    file = io.open("version.txt","w")
+    file:write(version..'\n'..build..'\n')
+    file:close()
+
+    -- Write Blitzmax containing version number
+	file = io.open("version.bmx","w")
+	file:write( 'Const OBSERVER_VERSION:String="'..version..'"\n' )
+	file:write( 'Const OBSERVER_BUILD:String="'..build..'"\n' )
+	file:close()
+	
+@end

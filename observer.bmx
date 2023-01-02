@@ -2,7 +2,7 @@ SuperStrict
 
 '   OBSERVER FOR BLITZMAX-NG
 '   (c) Copyright Si Dunford, Oct 2022, All Rights Reserved
-'   V1.5
+'   V1.6
 
 Rem
 bbdoc: bmx.observer
@@ -12,8 +12,11 @@ Module bmx.observer
 
 ModuleInfo "Copyright: Si Dunford, Oct 2022, All Rights Reserved"
 ModuleInfo "Author:    Si Dunford"
-ModuleInfo "Version:   1.5"
+ModuleInfo "Version:   1.6"
 ModuleInfo "License:   MIT"
+
+ModuleInfo "History: V1.6, 02 JAN 2023"
+ModuleInfo "History: Added .version()"
 
 ModuleInfo "History: V1.5, 30 DEC 2022"
 ModuleInfo "History: Added .count()"
@@ -41,6 +44,13 @@ Import BRL.Map			' TIntMap
 Import BRL.LinkedList	' TList
 Import BRL.Graphics		' FlipHook
 Import BRL.Threads		' Mutex/Threading
+
+'   INCREMENT OBSERVER_VERSION
+?Debug
+' @bmk include version.bmk
+' @bmk incrementVersion version.bmx
+?
+Include "version.bmx"
 
 ' Create event ID for FLIP Event
 Global EVENT_FLIP:Int = Observer.Allocate( "flip" )
@@ -174,6 +184,10 @@ Type Observer
 		Return list.count()
 	End Function
 	
+	' [1.6] Version number
+	Function Version:String()
+		Return OBSERVER_VERSION+"."+OBSERVER_BUILD
+	End Function
 End Type
 
 

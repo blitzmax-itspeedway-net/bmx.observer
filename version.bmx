@@ -1,0 +1,2 @@
+Const OBSERVER_VERSION:String="1.6"
+Const OBSERVER_BUILD:String="2"

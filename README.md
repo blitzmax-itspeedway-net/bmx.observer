@@ -2,7 +2,7 @@
 
 An event observer system easily added to any existing type.
 
-**VERSION:** 1.5
+**VERSION:** 1.6
 
 # DEPENDENCIES
 * [BlitzMax-NG](https://blitzmax.org/downloads/)
